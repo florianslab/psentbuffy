@@ -14,10 +14,12 @@ window.PennController._AddElementType("Button", function(PennEngine) {
         this.clicks = [];
         this.hasClicked = false;
         this.log = false;
-        this.jQueryElement[0].onclick = ()=>{
+        this.disabled = false;
+        this.click = ()=>{
             this.hasClicked=true;
             this.clicks.push(["Click", "Click", Date.now(), "NULL"]);
         };
+        this.jQueryElement[0].onclick = ()=>this.click();
         resolve();
     }
 
@@ -39,27 +41,32 @@ window.PennController._AddElementType("Button", function(PennEngine) {
     };
     
     this.actions = {
+        click: function(resolve){
+            this.click();
+            resolve();
+        },
         wait: function(resolve, test){
             if (test == "first" && this.hasClicked) // If first and already clicked, resolve already
                 resolve();
             else {                                  // Else, extend remove and do the checks
                 let resolved = false;
-                this.jQueryElement.click(()=>{
+                let oldClick = this.click;
+                this.click = ()=>{
+                    oldClick.apply(this);
                     if (resolved)
                         return;
                     if (test instanceof Object && test._runPromises && test.success){
-                        let oldDisabled = this.jQueryElement.attr("disabled");  // Disable temporarilly
-                        this.jQueryElement.attr("disabled", "tmp");
+                        let oldDisabled = this.disabled;  // Disable temporarilly
+                        this.jQueryElement.attr("disabled", true);
+                        this.disabled = "tmp";
                         test._runPromises().then(value=>{   // If a valid test command was provided
                             if (value=="success") {
                                 resolved = true;
                                 resolve();                  // resolve only if test is a success
                             }
-                            if (this.jQueryElement.attr("disabled")=="tmp"){
-                                if (!oldDisabled)           // Restore old setting if not modified by test
-                                    this.jQueryElement.removeAttr("disabled");
-                                else    
-                                    this.jQueryElement.attr("disabled", oldDisabled);
+                            if (this.disabled=="tmp"){
+                                this.disabled = oldDisabled;
+                                this.jQueryElement.attr("disabled", oldDisabled);
                             }   
                         });
                     }
@@ -67,19 +74,19 @@ window.PennController._AddElementType("Button", function(PennEngine) {
                         resolved = true;
                         resolve();                          // resolve anyway
                     }
-                });
+                };
             }
         }
     };
     
     this.settings = {
         callback: function(resolve, ...elementCommands){
-            let originalClick = this.jQueryElement[0].onclick;
-            this.jQueryElement[0].onclick = async function () {
+            let oldClick = this.click;
+            this.click = async function () {
                 if (!this.disabled)
                     for (let c in elementCommands)
                         await elementCommands[c]._runPromises();
-                originalClick.apply(this);
+                oldClick.apply(this);
             };
             resolve();
         },
@@ -88,10 +95,18 @@ window.PennController._AddElementType("Button", function(PennEngine) {
             resolve();
         },
         once: function(resolve){
-            if (this.hasClicked)
+            if (this.hasClicked){
+                this.disabled = true;
                 this.jQueryElement.attr("disabled", true);
-            else
-                this.jQueryElement.click(()=>this.jQueryElement.attr("disabled",true));
+            }
+            else{
+                let oldClick = this.click;
+                this.click = ()=>{
+                    oldClick.apply(this);
+                    this.disabled = true;
+                    this.jQueryElement.attr("disabled",true)
+                };
+            }
             resolve();
         }
     };

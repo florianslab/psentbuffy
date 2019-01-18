@@ -3,6 +3,8 @@ window.PennController._AddElementType("Tooltip", function(PennEngine) {
 
     function remove(){                          // Special function to remove element from DOM
         this.jQueryElement.remove();
+        if (this.jQueryContainer instanceof jQuery)
+            this.jQueryContainer.remove();
         if (this.frame && this.frame instanceof jQuery)
             this.frame.remove();
     }
@@ -74,11 +76,11 @@ window.PennController._AddElementType("Tooltip", function(PennEngine) {
                     position: "absolute",                                       // may be moved anywhere on the page
                     display: "inline-block",
                     visibility: "hidden",                                       // Hide until position is final
-                    overflow: "scroll",
+                    overflow: "auto",
                     top: "auto",
                     left: "auto",
-                    "margin-top": parenth,                                      // Default relative position: Bottom-Right
-                    "margin-left": parentw,
+                    "margin-top": 1+parenth,                                    // Default relative position: Bottom-Right
+                    "margin-left": 1+parentw,
                     "z-index": 9999,                                            // In case * layer (e.g. canvas)
                     padding: "1px"                                              // Just aesthetics
                 });
@@ -105,19 +107,19 @@ window.PennController._AddElementType("Tooltip", function(PennEngine) {
                 if (this.relativePosition){                                         // If other specified...
                     let set_top = ()=>{ 
                         if (this.relativePosition.match(/top/i))                    // Top
-                            return -1 * this.jQueryElement.outerHeight();
+                            return -1 * this.jQueryElement.outerHeight() - 1;
                         else if (this.relativePosition.match(/middle/i))            // Middle
                             return 0.5 * (element.height() - this.jQueryElement.outerHeight());
                         else
-                            return element.height();
+                            return element.height() + 1;
                     };
                     let set_left = ()=>{ 
                         if (this.relativePosition.match(/left/i))                   // Left
-                            return -1 * this.jQueryElement.outerWidth();
+                            return -1 * this.jQueryElement.outerWidth() - 1;
                         else if (this.relativePosition.match(/center/i))            // Center
                             return 0.5* (element.width() -  this.jQueryElement.outerWidth());
                         else
-                            return element.width();
+                            return element.width() + 1;
                     };
                     this.delayedPrinting = true;                              // To prevent early validation
                     setTimeout(()=>{                                          // Only accurate 2nd time for some reason

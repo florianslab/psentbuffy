@@ -11,6 +11,7 @@ window.PennController._AddElementType("Palette", function(PennEngine) {
         this.elements = [];
         this.colors = [];
         this.brushes = [];
+        this.log = false;
         this.select = element=>{
             if (!this.enabled||!this.currentColor)
                 return;
@@ -43,16 +44,17 @@ window.PennController._AddElementType("Palette", function(PennEngine) {
     this.end = function(){
         this.enabled = false;
         $('#bod').css('cursor','default');
-        // if (this.log){
-        //     if (!this.printTime)
-        //         PennEngine.controllers.running.save(this.type, this.id, "Print", "NA", "Never", "NULL");
-        //     else
-        //         PennEngine.controllers.running.save(this.type, this.id, "Print", "NA", this.printTime, "NULL");
-        // }
+        if (this.log){
+            if (this.log == "all")
+                for (let b = 0; b < this.brushes.length; b++)
+                    PennEngine.controllers.running.save(this.type, this.id, this.brushes[b][0], this.brushes[b][1], this.brushes[b][2], "NULL");
+            for (let e = 0; e < this.elements.length; e++)
+                PennEngine.controllers.running.save(this.type, this.id, this.elements[e][0].id, this.elements[e][1], "Final", "NULL");
+        }
     };
 
-    this.value = function(){                                    // Value is how many elements it contains
-        // return this.elementCommands.length;
+    this.value = function(){                                    // Value is how many brushes there have been
+        return this.brushes.length;
     };
     
     this.actions = {
@@ -172,6 +174,10 @@ window.PennController._AddElementType("Palette", function(PennEngine) {
         },
         disable: function(resolve){
             this.enabled = false;
+            resolve();
+        },
+        log: function(resolve, what){
+            this.log = what||"all";
             resolve();
         },
         once: function(resolve){

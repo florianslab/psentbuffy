@@ -216,7 +216,10 @@ window.PennController._AddElementType("Selector", function(PennEngine) {
         callback: function(resolve, ...elementCommands){
             let oldSelect = this.select;
             this.select = async function(element) {
+                let disabled = this.disabled;
                 oldSelect.apply(this, [element]);
+                if (disabled)
+                    return;
                 for (let c in elementCommands)
                     await elementCommands[c]._runPromises();
             };
