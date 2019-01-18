@@ -1,8 +1,47 @@
+// Animates the canvas 'ball' and changes its color
+shake = color=>[
+    getCanvas("ball").settings.css({transition: '0.25s ease-in-out', transform: 'translateX(10px)'})
+    ,
+    getButton("shake").settings.disable()
+    ,
+    getText("description").settings.text("<em>shaking...</em>")
+    ,
+    newTimer(String(Math.round(Math.random()*100000)), 300).start().wait()
+    ,
+    getCanvas("ball").settings.css({transform: 'none'})
+    ,
+    newTimer(String(Math.round(Math.random()*100000)), 300).start().wait()
+    ,
+    getCanvas("ball").settings.css('background', color)
+    ,
+    getButton("reset").settings.enable()
+    ,
+    getText("description").settings.text(" ")
+]
+
+// Generates a palette with two colors
+palette = (color1,color2,...elements)=>[
+    newCanvas("board", 100, 100)
+        .settings.center()
+        .settings.add( "center at 50" ,  -5  , newImage('bgPalette', 'https://www.dropbox.com/s/oa5ipw0b5gfgm5v/1494779624.png?raw=1' ).settings.size(120,90) )
+        .settings.add( 40 , 12 , newCanvas("color1" , 20, 20).settings.css('background', color1) )
+        .settings.add( 15 , 25 , newCanvas("color2" , 20, 20).settings.css('background', color2) )   
+        .print()
+    ,
+    newPalette("palette")
+        .settings.addColor( color1 , getCanvas("color1") /*, '2'*/ )
+        .settings.addColor( color2 , getCanvas("color2") /*, '1'*/ )
+        .settings.addElement( ...elements )
+]
+
+
 // Generates Canvas of Buffy's guesses and actuals flashes (actual flashes are hidden by default)
 strip = (buffy1,buffy2,actual1,actual2)=>[
     newCanvas( "buffysGuesses" , 100 , 80 )
-        .settings.add( "center at 25%" , 0 , newText("firstBuffy", "1st").settings.italic() )
-        .settings.add( "center at 75%" , 0 , newText("secondBuffy", "2nd").settings.italic() )
+        //.settings.add( "center at 25%" , 0 , newText("firstBuffy", "1st").settings.italic() )
+        //.settings.add( "center at 75%" , 0 , newText("secondBuffy", "2nd").settings.italic() )
+        .settings.add( "center at 25%" , 5 , newText("firstBuffy", "1 was").settings.italic() )
+        .settings.add( "center at 75%" , 5 , newText("secondBuffy", "2'll be").settings.italic() )
         .settings.add( "center at 25%" , 30 , newCanvas("buffyPatch1", 40, 40).settings.css('background',buffy1) )
         .settings.add( "center at 50%" , 20 , newCanvas("buffySep", 2, 60).settings.css('background','black') )
         .settings.add( "center at 75%" , 30 , newCanvas("buffyPatch2", 40, 40).settings.css('background',buffy2) )
@@ -15,7 +54,8 @@ strip = (buffy1,buffy2,actual1,actual2)=>[
         .settings.add( "center at 75%" , 30 , newCanvas("obsPatch2", 40, 40).settings.css('background',actual2) )
     ,
     newCanvas("buffyPanel", 200, 100)  
-        .settings.add( "right at 100%" , "center at 55%" , newImage("buffy", "buffy.png").settings.size(80,80) )
+        //.settings.add( "right at 100%" , "center at 55%" , newImage("buffy", "buffy.png").settings.size(80,80) )
+        .settings.add( "right at 100%" , "center at 55%" , newImage("buffy", "buffy_blindfold.png").settings.size(80,80) )
         .settings.add( -5 , -10 , newImage("buffyBubble", "buffyBubble.png").settings.size(130,120) )
         .settings.add( "center at 25%" , 0 , newText("think", "I THINK...") )
         .settings.add( 0 , 20 , getCanvas("buffysGuesses") )
@@ -29,22 +69,6 @@ strip = (buffy1,buffy2,actual1,actual2)=>[
         .settings.add( "center at 50%" , "center at 50%" , newText("then", "then").settings.hidden() )
         .settings.add( "right at 100%" ,               0 , getCanvas("observationsPanel").settings.hidden() )
         .settings.center()
-]
-
-
-// Generates a palette with two colors
-palette = (color1,color2,...elements)=>[
-    newCanvas("board", 100, 100)
-        .settings.center()
-        .settings.add( "center at 50" ,  -5  , newImage('bgPalette', 'https://www.dropbox.com/s/oa5ipw0b5gfgm5v/1494779624.png?raw=1' ).settings.size(120,90) )
-        .settings.add( 40 , 12 , newCanvas("color1" , 20, 20).settings.css('background', color1) )
-        .settings.add( 15 , 25 , newCanvas("color2" , 20, 20).settings.css('background', color2) )   
-        .print()
-    ,
-    newPalette("palette")
-        .settings.addColor( color1 , getCanvas("color1") , '2' )
-        .settings.addColor( color2 , getCanvas("color2") , '1' )
-        .settings.addElement( ...elements )
 ]
 
 

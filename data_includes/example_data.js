@@ -2,7 +2,11 @@ PennController.ResetPrefix(null);
 
 PennController.AddHost("https://files.lab.florianschwarz.net/ibexfiles/PennController/SampleTrials/");
 
-PennController.Sequence( startsWith("training") )
+//PennController.Sequence( "training-fixing" )
+//PennController.Sequence( startsWith("training") )
+//PennController.Sequence( startsWith("test") )
+//PennController.Sequence( randomize(startsWith("test")) )
+PennController.Sequence( startsWith("training") , randomize(startsWith("test")) )
 
 // Exectued before all trials
 PennController.Header(
