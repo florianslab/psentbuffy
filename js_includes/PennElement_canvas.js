@@ -93,6 +93,21 @@ window.PennController._AddElementType("Canvas", function(PennEngine) {
                 resolve();
             }
         }
+        ,
+        remove: async function(resolve, elementCommand){     // Since 1.2
+            if (elementCommand.hasOwnProperty("_element")){
+                let index = this.elementCommands.map(e=>e[0]._element).indexOf(elementCommand._element);
+                if (index > -1){
+                    this.elementCommands.splice(index,1);
+                    await elementCommand.remove()._runPromises();
+                }
+                else
+                    console.warn("Element referenced to remove from canvas not found in canvas");
+            }
+            else
+                console.warn("Invalid element referenced to remove from canvas");
+            resolve();
+        }
     };
 
 });
