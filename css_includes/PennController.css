@@ -7,6 +7,15 @@
     text-align: left;
 }
 
+.ball-container {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+.board-container {
+    margin-top: 2em;
+}
+
 .Tooltip {
     padding-top: 5px !important;
     padding-left: 5px !important;
@@ -55,10 +64,10 @@
     padding: 2px;
 }
 
-.description-container {
+.instructions-container, .description-container {
     font-weight: bold;
 }
-.description-container {
+.instructions-container, .description-container {
     font-size: large;
     margin-top: 1em;
     font-family: sans-serif;
@@ -102,9 +111,6 @@ td.Scale-scaleButton:hover {
     border: solid 1px grey;
 }
 
-.board {
-    /* margin-top: 2em !important; */
-}
 .board .Canvas {
     border-radius: 10px;
     border: dotted 1px grey;
