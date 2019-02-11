@@ -2,7 +2,24 @@ PennController.ResetPrefix(null);
 
 PennController.AddHost("https://files.lab.florianschwarz.net/ibexfiles/PennController/SampleTrials/");
 
-PennController.Sequence( startsWith("training") , randomize(startsWith("test")) )
+const DELAY = 750;
+
+PennController.Sequence( 
+    startsWith("tutorial") 
+    ,
+    startsWith("practice-1-"),     
+    startsWith("practice-2-"),     
+    startsWith("practice-3-"),     
+    startsWith("practice-4-"),     
+    startsWith("practice-5-"),     
+    startsWith("practice-6-"),     
+    startsWith("practice-7-"),     
+    startsWith("practice-8-"),     
+    startsWith("practice-9-"),     
+    startsWith("practice-10-")
+    ,
+    randomize(startsWith("test")) 
+)
 
     
 // Exectued before all trials
